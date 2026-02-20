@@ -1,0 +1,143 @@
+{
+  "info": {
+    "name": "Gigs eSIM Automation Prototype",
+    "description": "Test scenarios for the eSIM automation prototype",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Scenario 1: Provisioning Stuck (Rule Engine)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"subscriptionId\": \"sub_YOUR_ACTUAL_ID_HERE\",\n  \"userIssue\": \"my eSIM has been stuck for 2 hours\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/diagnose",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["diagnose"]
+        },
+        "description": "Tests rule engine detection of stuck provisioning (>15 min)"
+      }
+    },
+    {
+      "name": "Scenario 2: Device Config (Rule Engine)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"subscriptionId\": \"sub_YOUR_ACTUAL_ID_HERE\",\n  \"userIssue\": \"I have no service but the app says active\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/diagnose",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["diagnose"]
+        },
+        "description": "Tests device configuration rule when backend shows active"
+      }
+    },
+    {
+      "name": "Scenario 3: Ambiguous Input (LLM Fallback)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"subscriptionId\": \"sub_YOUR_ACTUAL_ID_HERE\",\n  \"userIssue\": \"it just doesn't work\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/diagnose",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["diagnose"]
+        },
+        "description": "Tests LLM fallback for vague user input"
+      }
+    },
+    {
+      "name": "Scenario 4: Normal Delay (Rule Engine)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"subscriptionId\": \"sub_YOUR_ACTUAL_ID_HERE\",\n  \"userIssue\": \"my eSIM is still activating\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/diagnose",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["diagnose"]
+        },
+        "description": "Tests normal delay rule (<15 min since activation)"
+      }
+    },
+    {
+      "name": "Scenario 5: Unknown Error (LLM Interpretation)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"subscriptionId\": \"sub_YOUR_ACTUAL_ID_HERE\",\n  \"userIssue\": \"getting error PROV_ERR_5423 when trying to activate\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/diagnose",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["diagnose"]
+        },
+        "description": "Tests LLM interpretation of unknown error codes"
+      }
+    }
+  ]
+}
